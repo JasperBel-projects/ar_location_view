@@ -28,8 +28,10 @@ class ArView extends StatefulWidget {
     required this.minDistanceReload,
     this.scaleWithDistance = true,
     this.markerColor,
+    this.radarBorderColor,
     this.backgroundRadar,
     this.radarPosition,
+    this.radarViewBuilder,
     this.showRadar = true,
     this.radarWidth,
   }) : super(key: key);
@@ -62,8 +64,14 @@ class ArView extends StatefulWidget {
   ///background radar color
   final Color? backgroundRadar;
 
+  ///border radar color
+  final Color? radarBorderColor;
+
   ///radar position in view
   final RadarPosition? radarPosition;
+
+  ///the widget housing the actual radar
+  final Widget Function(Widget)? radarViewBuilder;
 
   ///Show radar in view
   final bool showRadar;
@@ -162,16 +170,20 @@ class _ArViewState extends State<ArView> {
 
   Widget _radarPosition(BuildContext context, RadarPosition position,
       double heading, double width) {
-    final radar = Padding(
+    final radar = Container(
+      height: 200,
+      width: 200,
+      // color: Colors.yellow,
       padding: const EdgeInsets.all(8.0),
       child: CustomPaint(
-        size: Size(width / 2, width / 2),
+        size: Size(100, 100),
         painter: RadarPainter(
           maxDistance: widget.maxVisibleDistance,
           arAnnotations: widget.annotations,
           heading: heading,
           background: widget.backgroundRadar ?? Colors.grey,
           markerColor: widget.markerColor ?? Colors.red,
+          borderColor: widget.radarBorderColor ?? Color(0xFF505050),
         ),
       ),
     );
@@ -207,6 +219,10 @@ class _ArViewState extends State<ArView> {
           right: 0,
           child: radar,
         );
+      case RadarPosition.custom:
+        return widget.radarViewBuilder != null
+            ? widget.radarViewBuilder!(radar)
+            : Container(child: radar);
       default:
         return radar;
     }

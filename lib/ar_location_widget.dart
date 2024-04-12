@@ -8,6 +8,7 @@ class ArLocationWidget extends StatefulWidget {
     required this.annotations,
     required this.annotationViewBuilder,
     required this.onLocationChange,
+    this.radarViewBuilder,
     this.annotationWidth = 200,
     this.annotationHeight = 75,
     this.maxVisibleDistance = 1500,
@@ -20,6 +21,7 @@ class ArLocationWidget extends StatefulWidget {
     this.scaleWithDistance = true,
     this.markerColor,
     this.backgroundRadar,
+    this.radarBorderColor,
     this.radarPosition,
     this.showRadar = true,
     this.radarWidth,
@@ -67,11 +69,17 @@ class ArLocationWidget extends StatefulWidget {
   /// marker color in radar
   final Color? markerColor;
 
+  /// border color of the radar circle
+  final Color? radarBorderColor;
+
   ///background radar color
   final Color? backgroundRadar;
 
   ///radar position in view
   final RadarPosition? radarPosition;
+
+  ///the widget housing the actual radar when using custom for position
+  final Widget Function(Widget)? radarViewBuilder;
 
   ///Show radar in view
   final bool showRadar;
@@ -116,9 +124,11 @@ class _ArLocationWidgetState extends State<ArLocationWidget> {
             scaleWithDistance: widget.scaleWithDistance,
             markerColor: widget.markerColor,
             backgroundRadar: widget.backgroundRadar,
+            radarBorderColor: widget.radarBorderColor,
             radarPosition: widget.radarPosition,
             showRadar: widget.showRadar,
             radarWidth: widget.radarWidth,
+            radarViewBuilder: widget.radarViewBuilder,
           ),
         if (initCam && widget.accessory != null) widget.accessory!
       ],
